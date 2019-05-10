@@ -1,0 +1,29 @@
+{
+    "name": "webbuilders-group/facebook-login",
+    "description": "Adds ability to login with facebook graph api v3.3",
+    "type": "silverstripe-vendormodule",
+    "keywords": [
+        "silverstripe",
+        "facebook",
+        "login"
+    ],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Robert LeCreux",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "~4.3",
+        "silverstripe/versioned": "^1.0",
+        "silverstripe/vendor-plugin": "^1.0",
+        "facebook/graph-sdk": "^5.7"
+    },
+    "extra": {
+        "installer-name": "facebook-login",
+        "expose": [
+            "javascript"
+        ]
+    }
+}

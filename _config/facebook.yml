@@ -1,0 +1,11 @@
+---
+name: facebook
+---
+
+PageController:
+  extensions:
+    - Webbuilders\Facebook\Extension\FacebookControllerExtension
+
+Silverstripe\Security\Member:
+  extensions:
+    - Webbuilders\Facebook\Extension\FacebookMemberExtension
