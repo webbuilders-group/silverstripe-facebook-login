@@ -39,7 +39,7 @@ class FacebookControllerExtension extends DataExtension
 JS
         );
 
-        Requirements::javascript("resources/vendor/webbuilders/facebook/javascript/facebooklogin.js");
+        Requirements::javascript("resources/vendor/webbuilders-group/silverstripe-facebook-login/javascript/facebooklogin.js");
     }
 
     /**
