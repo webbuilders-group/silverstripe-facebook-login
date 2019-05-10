@@ -1,4 +1,4 @@
-Facebook
+Facebook Login
 =================
 
 Adds the ability for users to log into your site using Facebook's API
