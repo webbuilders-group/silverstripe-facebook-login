@@ -1,5 +1,5 @@
 {
-    "name": "webbuilders-group/facebook-login",
+    "name": "webbuilders-group/silverstripe-facebook",
     "description": "Adds ability to login with facebook graph api v3.3",
     "type": "silverstripe-vendormodule",
     "keywords": [
@@ -21,7 +21,7 @@
         "facebook/graph-sdk": "^5.7"
     },
     "extra": {
-        "installer-name": "facebook-login",
+        "installer-name": "silverstripe-facebook",
         "expose": [
             "javascript"
         ]
