@@ -154,7 +154,8 @@ JS
     {
         $valid = true;
 
-        $this->owner->extend("validateFBRegister", $data, $form, $valid);
+        $redirectTo = $data["backURL"];
+        $this->owner->extend("validateFBRegister", $data, $form, $valid, $redirectTo);
 
         if (!$valid) {
             Session::set('FormInfo.Form_FBRegistrationForm.data', $data);
@@ -173,7 +174,7 @@ JS
 
         $this->owner->extend("onAfterFBRegister", $member);
 
-        return $this->owner->redirect($data["backURL"]);
+        return $this->owner->redirect($redirectTo);
     }
 
     private function login(Member $member, array $credentials, HTTPRequest $request)
