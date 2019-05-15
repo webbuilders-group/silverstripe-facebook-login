@@ -162,6 +162,8 @@ JS
 
         $member->write();
 
+        $this->extend("onAfterFBRegister");
+
         return $this->owner->redirect($this->data["backURL"]);
     }
 
