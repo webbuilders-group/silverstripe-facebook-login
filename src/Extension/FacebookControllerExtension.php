@@ -4,8 +4,14 @@ namespace Webbuilders\Facebook\Extension;
 
 use Facebook\Facebook;
 use Facebook\SignedRequest;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Member;
 use Facebook\GraphNodes\GraphUser;
+use SilverStripe\Forms\EmailField;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HiddenField;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Security;
 use SilverStripe\View\Requirements;
@@ -22,14 +28,16 @@ class FacebookControllerExtension extends DataExtension
 
     private static $allowed_actions = [
         "fbauth",
+        "FBRegisterForm",
+        "registerFBMember",
     ];
 
     public function onAfterInit()
     {
-        $appID = Config::inst()->get(FacebookControllerExtension::class, "fb_app_id");
+        $appID = Config::inst()->get(self::class, "fb_app_id");
         $this->facebook = new Facebook([
             'app_id' => $appID,
-            'app_secret' => Config::inst()->get(FacebookControllerExtension::class, "fb_app_secret"),
+            'app_secret' => Config::inst()->get(self::class, "fb_app_secret"),
             'default_graph_version' => "v3.3",
         ]);
         Requirements::set_force_js_to_bottom(true);
@@ -86,37 +94,75 @@ JS
 
             $user = $resp->getGraphObject(GraphUser::class);
 
-            $member = $this->registerMember($user);
-
-            $identityStore = Injector::inst()->get(IdentityStore::class);
-            $identityStore->logIn($member);
+            return $this->owner->redirect($request->getVar("backURL") . "?signed_request=" . $request->getVar('signed_request'));
 
         }
         return $this->owner->redirect($request->getVar("backURL"));
 
     }
 
+    public function FBRegisterForm(HTTPRequest $request)
+    {
+        $fields = FieldList::create(
+            $first = TextField::create("FirstName"),
+            $last = TextField::create("SurName", "Last Name"),
+            $email = EmailField::create("Email"),
+            $fb = HiddenField::create("FacebookID"),
+            HiddenField::create("backURL")->setValue($request->getVar("backURL"))
+        );
+
+        if (array_key_exists("signed_request", $request->getVars())) {
+            $sr = new SignedRequest($this->facebook->getApp(), $request->getVar('signed_request'));
+            $resp = $this->facebook->sendRequest(
+                'GET',
+                $sr->getUserId(),
+                [
+                    "fields" => "first_name,last_name,email",
+                ],
+                $this->facebook->getApp()->getAccessToken()
+            );
+
+            $user = $resp->getGraphObject(GraphUser::class);
+
+            $first->setValue($user->getFirstName());
+            $last->setValue($user->getLastName());
+            $email->setValue($user->getEmail());
+            $fb->setValue($user->getId());
+        }
+
+        $form = Form::create(
+            $this->owner,
+            "FBRegisterForm",
+            $fields,
+            FieldList::create(
+                FormAction::create("registerFBMember", "Sign Up")
+            )
+        );
+
+        $this->owner->extend("updateFBRegisterForm", $form);
+
+        return $form;
+    }
+
     /**
      * Register a member with data
      * @param  array $data
      * @param  object $form
-     * @return Memeber
+     * @return Member
      */
-    private function registerMember(GraphUser $user)
+    public function registerFBMember($data, Form $form)
     {
         $member = new Member();
 
-        $member->FirstName = $user->getFirstName();
-        $member->Surname = $user->getLastName();
+        $form->saveInto($member);
+
         if (class_exists(FluentState::class)) {
             $member->Language = FluentState::singleton()->getLocale();
         }
 
-        $member->FacebookID = $user->getId();
-        $member->Email = $user->getEmail();
         $member->write();
 
-        return $member;
+        return $this->owner->redirect($this->data["backURL"]);
     }
 
     private function login(Member $member, array $credentials, HTTPRequest $request)

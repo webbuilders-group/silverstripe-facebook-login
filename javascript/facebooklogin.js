@@ -25,7 +25,7 @@ jQuery(document).ready(function ($) {
         e.preventDefault();
         FB.login(function (response) {
             if (response.authResponse && response.status == 'connected') {
-                window.location.href = "home/fbauth?signed_request=" + response.authResponse.signedRequest + "&backURL=" + window.location.href;
+                window.location.href = (CurrentLang === "fr_CA" ? "fr/home/" : "home/") + "fbauth?signed_request=" + response.authResponse.signedRequest + "&backURL=" + window.location.href;
             }
         }, { scope: 'email' });
         return false;
@@ -38,7 +38,7 @@ jQuery(document).ready(function ($) {
         FB.login(function (response) {
             if (response.authResponse) {
                 if (response.status == 'connected') {
-                    window.location.href = localizePath("/login/fbauth?signed_request=" + response.authResponse.signedRequest);
+                    window.location.href = (CurrentLang === "fr_CA" ? "fr/home/" : "home/") + "fbauth?signed_request=" + response.authResponse.signedRequest + "&backURL=" + window.location.href;
                 }
             } else {
                 // console.log('User cancelled login or did not fully authorize.');
@@ -46,4 +46,5 @@ jQuery(document).ready(function ($) {
         }, { scope: 'public_profile,email' });
         return false;
     });
+
 });
