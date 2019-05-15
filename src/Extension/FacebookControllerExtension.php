@@ -152,6 +152,15 @@ JS
      */
     public function registerFBMember($data, Form $form)
     {
+        $valid = true;
+
+        $this->owner->extend("validateFBRegister", $data, $form, $valid);
+
+        if (!$valid) {
+            Session::set('FormInfo.Form_FBRegistrationForm.data', $data);
+            return $this->owner->redirectBack();
+        }
+
         $member = new Member();
 
         $form->saveInto($member);
