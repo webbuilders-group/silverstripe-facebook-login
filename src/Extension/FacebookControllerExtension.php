@@ -105,13 +105,14 @@ JS
     {
         $fields = FieldList::create(
             $first = TextField::create("FirstName"),
-            $last = TextField::create("SurName", "Last Name"),
+            $last = TextField::create("Surname", "Last Name"),
             $email = EmailField::create("Email"),
             $fb = HiddenField::create("FacebookID"),
             HiddenField::create("backURL")->setValue($request->getVar("backURL"))
         );
 
         if (array_key_exists("signed_request", $request->getVars())) {
+            $request->getSession()->set('signed_request', $request->getVar('signed_request'));
             $sr = new SignedRequest($this->facebook->getApp(), $request->getVar('signed_request'));
             $resp = $this->facebook->sendRequest(
                 'GET',
@@ -154,12 +155,12 @@ JS
     {
         $valid = true;
 
-        $redirectTo = $data["backURL"];
-        $this->owner->extend("validateFBRegister", $data, $form, $valid, $redirectTo);
+        $results = new \stdClass();
+        $this->owner->extend("validateFBRegister", $data, $form, $results);
 
-        if (!$valid) {
-            Session::set('FormInfo.Form_FBRegistrationForm.data', $data);
-            return $this->owner->redirectBack();
+        if (!$results->valid) {
+            $this->owner->request->getSession()->set('FormInfo.Form_FBRegistrationForm.data', $data);
+            return $this->owner->redirect($results->redirectTo);
         }
 
         $member = new Member();
@@ -174,7 +175,7 @@ JS
 
         $this->owner->extend("onAfterFBRegister", $member);
 
-        return $this->owner->redirect($redirectTo);
+        return $this->owner->redirect($data['redirectTo']);
     }
 
     private function login(Member $member, array $credentials, HTTPRequest $request)
