@@ -171,6 +171,8 @@ JS
             $member->Language = FluentState::singleton()->getLocale();
         }
 
+        $this->owner->extend("onBeforeFBRegister", $member);
+
         $member->write();
 
         $this->owner->extend("onAfterFBRegister", $member);
