@@ -2,7 +2,7 @@
 name: facebook
 ---
 
-PageController:
+Silverstripe\Control\Controller:
   extensions:
     - Webbuilders\Facebook\Extension\FacebookControllerExtension
 
