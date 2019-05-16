@@ -80,7 +80,7 @@ JS
         // checks to see if this user already is tracked in the system
         if ($member) {
             $creds = ["RememberMe" => false];
-            $this->login($member, $creds, $request);
+            $this->loginMember($member, $creds, $request);
         } else {
             // if it's not make the user
             $resp = $this->facebook->sendRequest(
@@ -180,7 +180,7 @@ JS
         return $this->owner->redirect($data['redirectTo']);
     }
 
-    private function login(Member $member, array $credentials, HTTPRequest $request)
+    private function loginMember(Member $member, array $credentials, HTTPRequest $request)
     {
         /** IdentityStore */
         $rememberMe = (isset($credentials['Remember']) && Security::config()->get('autologin_enabled'));
