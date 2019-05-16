@@ -177,7 +177,7 @@ JS
 
         $this->owner->extend("onAfterFBRegister", $member);
 
-        return $this->owner->redirect($data['redirectTo']);
+        return $this->owner->redirect($data['backURL']);
     }
 
     private function loginMember(Member $member, array $credentials, HTTPRequest $request)
