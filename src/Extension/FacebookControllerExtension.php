@@ -42,7 +42,8 @@ class FacebookControllerExtension extends DataExtension
         ]);
         Requirements::set_force_js_to_bottom(true);
 
-        Requirements::customScript(<<<JS
+        Requirements::customScript(
+            <<<JS
             var FBID = $appID;
 JS
         );
@@ -81,24 +82,11 @@ JS
         if ($member) {
             $creds = ["RememberMe" => false];
             $this->loginMember($member, $creds, $request);
-        } else {
-            // if it's not make the user
-            $resp = $this->facebook->sendRequest(
-                'GET',
-                $sr->getUserId(),
-                [
-                    "fields" => "first_name,last_name,email",
-                ],
-                $this->facebook->getApp()->getAccessToken()
-            );
-
-            $user = $resp->getGraphObject(GraphUser::class);
-
-            return $this->owner->redirect($request->getVar("backURL") . "?signed_request=" . $request->getVar('signed_request'));
-
+            return $this->owner->redirect($request->getVar("backURL"));
         }
-        return $this->owner->redirect($request->getVar("backURL"));
 
+        // If the user doesn't exist send them to the registration form
+        return $this->owner->redirect($request->getVar("backURL") . "?signed_request=" . $request->getVar('signed_request') . "&backURL=" . $request->getVar("backURL"));
     }
 
     public function FBRegisterForm(HTTPRequest $request)
