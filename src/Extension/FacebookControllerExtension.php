@@ -40,15 +40,14 @@ class FacebookControllerExtension extends DataExtension
             'app_secret' => Config::inst()->get(self::class, "fb_app_secret"),
             'default_graph_version' => "v3.3",
         ]);
-        Requirements::set_force_js_to_bottom(true);
 
         Requirements::customScript(
             <<<JS
             var FBID = $appID;
 JS
-        );
+        , 'webbuilders-group/silverstripe-facebook-login_fbid');
 
-        Requirements::javascript("resources/vendor/webbuilders-group/silverstripe-facebook-login/javascript/facebooklogin.js");
+        Requirements::javascript("webbuilders-group/silverstripe-facebook-login: javascript/facebooklogin.js");
     }
 
     /**
