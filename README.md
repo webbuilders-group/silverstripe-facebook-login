@@ -12,7 +12,7 @@ Adds the ability for users to log into your site using Facebook's API
 Installation is supported via composer only
 
 ```sh
-composer require webbuilders/facebook
+composer require webbuilders-group/silverstripe-facebook-login
 ```
 
 * Run `dev/build?flush=all` to regenerate the manifest
